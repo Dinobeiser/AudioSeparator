@@ -4,6 +4,7 @@ DEIN ORIGINAL-DESIGN mit Auto-Download & FFmpeg-Fix.
 """
 
 import math
+import time
 import os
 import shutil
 import threading
@@ -140,6 +141,7 @@ def _separate_audio_separator(input_path, output_dir, model_file, log):
     sep.load_model(model_file)
     log("  Trenne …")
     output_files = sep.separate(str(input_path))
+    time.sleep(1.0)
     stem = input_path.stem
     vocals_out, bg_out = output_dir / f"{stem}_vocals.wav", output_dir / f"{stem}_background.wav"
     for f in output_files:
@@ -151,6 +153,7 @@ def _separate_audio_separator(input_path, output_dir, model_file, log):
         elif "instrum" in name_lower or "no vocal" in name_lower or "music" in name_lower: fp.replace(bg_out)
     for out_path in (vocals_out, bg_out):
         if out_path.exists():
+            time.sleep(0.2)
             audio, sr = sf.read(str(out_path), dtype="float32")
             _write_float32(out_path, audio, sr)
     return vocals_out, bg_out
